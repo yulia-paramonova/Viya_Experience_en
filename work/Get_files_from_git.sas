@@ -17,33 +17,51 @@ proc casutil;
     save casdata='EN_TEXTDATA' incaslib='casuser' casout="EN_TEXTDATA.sashdat" outcaslib='cafrance';
 run;
 
+/* EN_INSURANCE_CUSTOMER_DATA_DVR */
 
-/* Load and promote files from File Server */
-proc casutil;
-	load file='&_USERHOME/EN_INSURANCE_CUSTOMER_DATA_DVR.sashdat' 
-		casout='EN_INSURANCE_CUSTOMER_DATA' outcaslib='casuser';
-run;
-
-proc casutil;
-	load 
-		file='&_USERHOME/EN_OPENDATA_ACCIDENT.sashdat' 
-		casout='EN_OPENDATA_ACCIDENT' outcaslib='casuser';
-run;
-
-/* UE_OPENDATA_ACCIDENT */
-filename outfile2 "&_USERHOME/UE_OPENDATA_ACCIDENT.sashdat";
-
+filename outfile "&_USERHOME/EN_INSURANCE_CUSTOMER_DATA_DVR.zip";
 proc http
-    url="https://github.com/yulia-paramonova/Viya_Experience/raw/main/Data/UE_OPENDATA_ACCIDENT.sashdat"
-    method="GET" out=outfile2;
+clear_cache
+url="https://github.com/yulia-paramonova/Viya_Experience_en/raw/refs/heads/main/Data/EN_INSURANCE_CUSTOMER_DATA_DVR.zip"
+method="GET"
+out=outfile;
+run;
+
+filename inzip zip "&_USERHOME/EN_INSURANCE_CUSTOMER_DATA_DVR.zip";
+
+data _null_;
+    infile inzip(EN_INSURANCE_CUSTOMER_DATA_DVR.sashdat) lrecl=256 recfm=F length=length eof=eof unbuf;
+    file "&_USERHOME/EN_INSURANCE_CUSTOMER_DATA_DVR.sashdat" lrecl=256 recfm=N;
+    input;
+    put _infile_;
+    return;
+    eof:
+    stop;
 run;
 
 proc casutil;
-    load file="&_USERHOME/UE_OPENDATA_ACCIDENT.sashdat" promote
-        casout='UE_OPENDATA_ACCIDENT' outcaslib='casuser';
+	load file="&_USERHOME/EN_INSURANCE_CUSTOMER_DATA_DVR.sashdat"
+		promote casout='EN_INSURANCE_CUSTOMER_DATA_DVR' outcaslib='casuser';
+run;
+
+filename outfile clear;
+filename inzip clear;
+
+/* EN_OPENDATA_ACCIDENT */
+filename outfile2 "&_USERHOME/EN_OPENDATA_ACCIDENT.sashdat";
+proc http
+url="https://github.com/yulia-paramonova/Viya_Experience_en/raw/refs/heads/main/Data/EN_OPENDATA_ACCIDENT.sashdat"
+method="GET"
+out=outfile2;
+run;
+
+proc casutil;
+	load file="&_USERHOME/EN_OPENDATA_ACCIDENT.sashdat"
+		promote casout='EN_OPENDATA_ACCIDENT' outcaslib='casuser';
 run;
 
 filename outfile2 clear;
+
 /* Flux */
 filename flux "&_USERHOME/Viya_Experience.flw";
 

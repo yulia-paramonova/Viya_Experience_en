@@ -6,7 +6,7 @@ proc datasets library = CASUSER memtype = (data view) nolist nowarn;
 quit;
 
 
-/* Text Data */
+/* region: Text Data */
 filename textdata "&_USERHOME/Dataset_Public_mini.xlsx";
 
 proc http
@@ -20,11 +20,12 @@ run;
 filename textdata clear;
 
 proc casutil;
-    promote casdata='EN_TEXTDATA' casout='EN_TEXTDATA' incaslib='casuser' outcaslib='cafrance';
-    save casdata='EN_TEXTDATA' incaslib='cafrance' casout="EN_TEXTDATA.sashdat" outcaslib='cafrance';
+    promote casdata='EN_TEXTDATA' casout='EN_TEXTDATA' incaslib='casuser' outcaslib='casuser';
+    save casdata='EN_TEXTDATA' incaslib='casuser' casout="EN_TEXTDATA.sashdat" outcaslib='casuser';
 run;
+/* endregion : Text Data */
 
-/* EN_INSURANCE_CUSTOMER_DATA_DVR */
+/* region: EN_INSURANCE_CUSTOMER_DATA_DVR */
 
 filename outfile "&_USERHOME/EN_INSURANCE_CUSTOMER_DATA_DVR.zip";
 proc http
@@ -53,8 +54,9 @@ run;
 
 filename outfile clear;
 filename inzip clear;
+/* endregion: EN_INSURANCE_CUSTOMER_DATA_DVR */
 
-/* EN_OPENDATA_ACCIDENT */
+/* region: EN_OPENDATA_ACCIDENT */
 filename outfile2 "&_USERHOME/EN_OPENDATA_ACCIDENT.sashdat";
 proc http
 url="https://github.com/yulia-paramonova/Viya_Experience_en/raw/refs/heads/main/Data/EN_OPENDATA_ACCIDENT.sashdat"
@@ -68,12 +70,15 @@ proc casutil;
 run;
 
 proc casutil;
-    promote casdata='EN_TEXTDATA' casout='EN_TEXTDATA' incaslib='casuser' outcaslib='cafrance';
-    save casdata='EN_TEXTDATA' incaslib='casuser' casout="EN_TEXTDATA.sashdat" outcaslib='cafrance';
+    promote casdata='EN_TEXTDATA' casout='EN_TEXTDATA' incaslib='casuser' outcaslib='casuser';
+    save casdata='EN_TEXTDATA' incaslib='casuser' casout="EN_TEXTDATA.sashdat" outcaslib='casuser';
 run;
 
 filename outfile2 clear;
+/* endregion: EN_OPENDATA_ACCIDENT */
 
+
+/* Region : other */
 /* Flux */
 filename flux "&_USERHOME/Viya_Experience.flw";
 
